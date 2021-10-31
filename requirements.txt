@@ -8,3 +8,4 @@ traitlets==5.0.5
 scipy==1.6.2
 mlxtend==0.19.0
 networkx==2.4
+tqdm==4.62.0
