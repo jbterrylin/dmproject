@@ -925,44 +925,45 @@ mae_score_list = []
 
 if(QuestionSB == "Question 5"):
     for q5_states in q5_state_list:
-        q5_model_df = q5_combined_df[q5_states]
-        q5_model_df = q5_model_df.fillna(0)
-        q5_y = q5_model_df['cases_new']
-        q5_X = q5_model_df[training_features]
-        q5_X_train, q5_X_test, q5_y_train, q5_y_test = train_test_split(q5_X, q5_y, test_size = 0.2, random_state = random_seed)
+        if(q5_states == Question5SB):
+            q5_model_df = q5_combined_df[q5_states]
+            q5_model_df = q5_model_df.fillna(0)
+            q5_y = q5_model_df['cases_new']
+            q5_X = q5_model_df[training_features]
+            q5_X_train, q5_X_test, q5_y_train, q5_y_test = train_test_split(q5_X, q5_y, test_size = 0.2, random_state = random_seed)
 
-        # Model Training
-        for classifiers in q5_classifier_names:
-            print('Currently Training '+classifiers+' model for ' + q5_states)
-            q5_classifiers[classifiers].fit(q5_X_train, q5_y_train)
+            # Model Training
+            for classifiers in q5_classifier_names:
+                print('Currently Training '+classifiers+' model for ' + q5_states)
+                q5_classifiers[classifiers].fit(q5_X_train, q5_y_train)
 
-            # Evalutation 
-            q5_predictions = q5_classifiers[classifiers].predict(q5_X_test)
-            q5_mae = mean_absolute_error(q5_y_test, q5_predictions)
-            q5_mape = mean_absolute_percentage_error(q5_y_test, q5_predictions)
-            q5_mae_score_round = round(q5_mae, 3)
-            mae_score_list.append(q5_mae_score_round)
-#             q5_mape_score_round  = round(q5_mape, 3)
-            print('The MAE for'+classifiers+' is:', q5_mae_score_round)
-#             print('The Mean Absolute Percentage Error is:', q5_mape_score_round)
+                # Evalutation 
+                q5_predictions = q5_classifiers[classifiers].predict(q5_X_test)
+                q5_mae = mean_absolute_error(q5_y_test, q5_predictions)
+                q5_mape = mean_absolute_percentage_error(q5_y_test, q5_predictions)
+                q5_mae_score_round = round(q5_mae, 3)
+                mae_score_list.append(q5_mae_score_round)
+    #             q5_mape_score_round  = round(q5_mape, 3)
+                print('The MAE for'+classifiers+' is:', q5_mae_score_round)
+    #             print('The Mean Absolute Percentage Error is:', q5_mape_score_round)
+                if(QuestionSB == "Question 5" and Question5SB == q5_states):
+                    st.header(classifiers+' model for ' + q5_states)
+                    st.write('The MAE for'+classifiers+' is:', q5_mae_score_round)
+    #                 st.write('The Mean Absolute Percentage Error is:', q5_mape_score_round)
+                    true_vs_pred(q5_y_test, q5_predictions)
+                print('-'*100)
+
+            fig = plt.figure()
+            ax = fig.add_axes([0,0,1,1])
+            ax.bar(q5_classifier_names, mae_score_list)
+            ax.set_ylabel('MAE Score')
+            ax.set_title('Performance of each model in ' + q5_states)
+            plt.show()
             if(QuestionSB == "Question 5" and Question5SB == q5_states):
-                st.header(classifiers+' model for ' + q5_states)
-                st.write('The MAE for'+classifiers+' is:', q5_mae_score_round)
-#                 st.write('The Mean Absolute Percentage Error is:', q5_mape_score_round)
-                true_vs_pred(q5_y_test, q5_predictions)
-            print('-'*100)
-
-        fig = plt.figure()
-        ax = fig.add_axes([0,0,1,1])
-        ax.bar(q5_classifier_names, mae_score_list)
-        ax.set_ylabel('MAE Score')
-        ax.set_title('Performance of each model in ' + q5_states)
-        plt.show()
-        if(QuestionSB == "Question 5" and Question5SB == q5_states):
-            st.header("Performance Comparison Chart")
-            st.pyplot()
-        print('*'*100)
-        mae_score_list.clear()
+                st.header("Performance Comparison Chart")
+                st.pyplot()
+            print('*'*100)
+            mae_score_list.clear()
 
 
 # # Sudish Part 
